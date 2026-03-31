@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Courtier - Leads Assurance Santé</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Dashboard Leads</div>
+<div class="notifications" id="notificationsContainer">
+        <span id="newLeadsCount" class="badge">0</span>
+        <div class="bell" id="notificationBell">🔔</div>
+        <div class="notification-panel" id="notificationPanel">
+          <div class="panel-header">
+            <h4>Nouveaux leads</h4>
+            <button id="markAllRead">Tout lire</button>
+          </div>
+          <div id="notificationList"></div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="stats-grid">
+      <div class="stats">
+        <div class="stat-card">
+          <h3>Nouveaux</h3>
+          <span id="statsNouveau">0</span>
+        </div>
+        <div class="stat-card">
+          <h3>Contacté</h3>
+          <span id="statsContacte">0</span>
+        </div>
+        <div class="stat-card">
+          <h3>En discussion</h3>
+          <span id="statsEnDiscussion">0</span>
+        </div>
+        <div class="stat-card">
+          <h3>Converti</h3>
+          <span id="statsConverti">0</span>
+        </div>
+        <div class="stat-card">
+          <h3>Perdu</h3>
+          <span id="statsPerdu">0</span>
+        </div>
+        <div class="stat-card total">
+          <h3>Total</h3>
+          <span id="statsTotal">0</span>
+        </div>
+      </div>
+      <div class="pie-chart-container">
+        <canvas id="statusPieChart" width="300" height="300"></canvas>
+      </div>
+    </div>
+
+    <section class="leads-section">
+      <h2>Liste des Leads <span id="liveIndicator">🔴 Live</span></h2>
+      <table id="leadsTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Nom</th>
+            <th>Contact</th>
+            <th>Besoin</th>
+            <th>Message</th>
+            <th>Statut</th>
+            <th>Relances</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="leadsBody">
+        </tbody>
+      </table>
+    </section>
+
+    <section class="admin-section">
+      <h3>Configuration Délais Relance (heures)</h3>
+      <div>
+        <label>Nouveau: <input id="delayNouveau" type="number" value="24" min="1"></label>
+        <label>Contacté: <input id="delayContacte" type="number" value="48" min="1"></label>
+        <label>Discussion: <input id="delayDiscussion" type="number" value="72" min="1"></label>
+        <label>Perdu: <input id="delayPerdu" type="number" value="168" min="1"></label>
+        <button id="saveDelais">Sauvegarder</button>
+        <button id="loadDelais">Charger</button>
+      </div>
+    </section>
+  </main>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+

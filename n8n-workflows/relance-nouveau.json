@@ -1,0 +1,22 @@
+{
+  "name": "Relance Nouveau",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "= {{ $json.webhookUrl }}", 
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "toEmail",
+              "value": "= {{ $json.lead.email }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "position": [460, 300]
+    }
+  ],
+  "connections": {}
+}

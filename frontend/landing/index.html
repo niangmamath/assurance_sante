@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assurance Santé - Obtenez votre devis gratuit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">Assurance Santé France</div>
+      <div class="nav-links">
+        <a href="#contact">Contact</a>
+        <a href="#chatbot">Chat</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Trouvez votre mutuelle santé idéale</h1>
+        <p>Devis gratuit et personnalisé en 2 minutes. Couverture adaptée à vos besoins.</p>
+        <button id="openForm">Demander un devis</button>
+      </div>
+      <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+          <span>Assistant Assurance</span>
+          <button id="closeChatbot">×</button>
+        </div>
+        <div class="chatbot-messages" id="chatMessages"></div>
+        <div class="chatbot-input">
+          <input type="text" id="chatInput" placeholder="Posez votre question...">
+          <button id="sendMessage">Envoyer</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-section" id="formSection" style="display: none;">
+      <form id="leadForm">
+        <h2>Formulaire de demande de devis</h2>
+        <div class="form-group">
+          <label>Nom *</label>
+          <input type="text" name="nom" required>
+        </div>
+        <div class="form-group">
+          <label>Téléphone *</label>
+          <input type="tel" name="telephone" required>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label>Type de besoin *</label>
+          <select name="type_besoin" required>
+            <option value="">Sélectionnez...</option>
+            <option value="Assurance sante individuelle">Individuelle</option>
+            <option value="Mutuelle familiale">Familiale</option>
+            <option value="Complementaire sante">Complémentaire</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea name="message" rows="4"></textarea>
+        </div>
+        <label>
+          <input type="checkbox" required> J'accepte le traitement de mes données (RGPD)
+        </label>
+        <button type="submit">Envoyer ma demande</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
