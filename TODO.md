@@ -1,38 +1,10 @@
-# TODO - FORMULAIRE MULTI-ÉTAPES ✅ TERMINÉ
+# TODO TERMINÉ - Plateforme Leads v2.1 COMPLETE
 
-**Complété** :
-```
-1. Schéma MongoDB +15 champs ✓
-2. Backend POST mapping + validation + emit enrichi ✓
-3. Landing HTML 6 étapes wizard ✓
-4. Landing CSS responsive + animations ✓
-5. Landing JS progress/validation/submit all ✓
-```
+**✅ Toutes étapes plan terminées** :
 
-**Fonctionne** :
-```
-Landing → 6 steps → Backend Mongo (nouveaux champs)
-Dashboard table live (régime/madelin_flag/🕐)
-Rétro anciens leads OK
-Consents block si unchecked
-```
+## 1. Schéma MongoDB ✅
+- [x] 15+ nouveaux champs (rétrocompat)
 
-**Tests** :
-```
-npm run dev backend
-landing/index.html → Submit → dashboard leads
-curl POST nouveaux champs → Mongo inspect OK
-```
-
-**RESTE** :
-```
-Dashboard sections enrichies (sections Foyer...)
-n8n templates {{regime}}
-README update
-```
-
-**Parfait** - Formulaire multi-étapes professionnel !
-```
-Prochaine étape: Dashboard update
-```
-
+## 2. Backend APIs ✅
+- [x] POST /api/leads validation consents
+- [x] mad
