@@ -5,9 +5,15 @@ const socket = io('http://localhost:3000'); // Socket direct
 const leadsBody = document.getElementById('leadsBody');
 const newLeadsCount = document.getElementById('newLeadsCount');
 const liveIndicator = document.getElementById('liveIndicator');
+const leadDetailPanel = document.getElementById('leadDetailPanel');
+const panelBody = document.getElementById('panelBody');
+const leadIdDisplay = document.getElementById('leadIdDisplay');
+const closeLeadPanel = document.getElementById('closeLeadPanel');
+const panelOverlay = document.getElementById('panelOverlay');
 
 // Delais global
 let delaisConfig = { nouveau: 24, contacte: 48, 'en_discussion': 72, perdu: 168 };
+let currentLead = null;
 
 async function loadLeads() {
   try {
@@ -32,8 +38,7 @@ function displayLeads(leads) {
       <td>${lead.nom}</td>
       <td>${lead.telephone || ''}<br>${lead.email}</td>
       <td>${lead.type_besoin}</td>
-      <td title="${lead.message}">${lead.message}</td>
-
+      <td title="${lead.message}">${lead.message?.substring(0,50)}...</td>
       <td>
         <select onchange="updateStatut('${lead._id}', this.value)" class="status-select">
           <option value="nouveau" ${lead.statut === 'nouveau' ? 'selected' : ''}>Nouveau</option>
@@ -46,10 +51,157 @@ function displayLeads(leads) {
       <td>${lead.nb_relances || 0}</td>
       <td>
         ${showRelance ? `<button class="relance-btn" onclick="relanceLead('${lead._id}')">Relancer</button>` : '<span style="color:green">OK</span>'}
+        <button class="detail-btn" onclick="showLeadDetail('${lead._id}')" title="Détail">👁️</button>
       </td>
     `;
     leadsBody.appendChild(row);
   });
+}
+
+// PANEL DÉTAIL LEAD
+async function showLeadDetail(id) {
+  try {
+    const response = await fetch(`${API_BASE}/leads/${id}`);
+    const lead = await response.json();
+    currentLead = lead;
+    
+    leadIdDisplay.textContent = lead.nom || lead._id;
+    populatePanel(lead);
+    leadDetailPanel.classList.add('show');
+    panelOverlay.classList.add('show');
+  } catch (error) {
+    console.error('Lead detail error:', error);
+    alert('Erreur chargement détail');
+  }
+}
+
+function populatePanel(lead) {
+  const commentText = lead.commentaire || lead.message || 'Aucun commentaire';
+  
+  panelBody.innerHTML = `
+    <div class="panel-section">
+      <h4>1. Identité</h4>
+      <p><strong>Nom :</strong> ${lead.nom || 'Non renseigné'}</p>
+      <p><strong>Date naissance :</strong> ${lead.date_naissance || 'Non renseigné'}</p>
+      <p><strong>Adresse :</strong> ${lead.adresse || 'Non renseigné'}</p>
+      <p><strong>Email :</strong> ${lead.email || 'Non renseigné'}</p>
+      <p><strong>Tél mobile :</strong> ${lead.telephone || 'Non renseigné'}</p>
+      <p><strong>Tél fixe :</strong> ${lead.telephone_fixe || 'Non renseigné'}</p>
+    </div>
+    
+    <div class="panel-section">
+      <h4>2. Composition foyer</h4>
+      <p><strong>Nombre personnes :</strong> ${lead.nb_personnes || 'Non renseigné'}</p>
+      <p><strong>Bénéficiaires :</strong> ${lead.beneficiaires?.join(', ') || 'Non renseigné'}</p>
+      <p><strong>Situation familiale :</strong> ${lead.situation_familiale || 'Non renseigné'}</p>
+    </div>
+    
+    <div class="panel-section">
+      <h4>3. Régime & Profil</h4>
+      <p><strong>Régime :</strong> ${lead.regime || 'Non renseigné'}</p>
+      ${lead.madelin_flag ? '<span class="madelin-badge">LOI MADELIN</span>' : ''}
+    </div>
+    
+    <div class="panel-section">
+      <h4>4. Besoins actuels</h4>
+      <p><strong>Postes prioritaires :</strong> ${lead.postes_prioritaires?.join(', ') || 'Non renseigné'}</p>
+      <p><strong>Mutuelle actuelle :</strong> ${lead.mutuelle_actuelle || 'Non renseigné'}</p>
+      <p><strong>Tarif mensuel :</strong> ${lead.tarif_mensuel ? lead.tarif_mensuel + '€' : 'Non renseigné'}</p>
+      <p><strong>Motivation :</strong> ${lead.motivation || 'Non renseigné'}</p>
+    </div>
+    
+    <div class="panel-section">
+      <h4>5. Joignabilité</h4>
+      <p><strong>Créneau rappel :</strong> <span class="highlight">🕐 ${lead.creneau_rappel || 'Non renseigné'}</span></p>
+      <p><strong>Date réception :</strong> ${new Date(lead.timestamp).toLocaleString('fr-FR')}</p>
+    </div>
+    
+    <div class="panel-section">
+      <h4>6. Commentaire</h4>
+      <p>${commentText}</p>
+    </div>
+    
+    <div class="panel-section">
+      <h4>7. Conformité</h4>
+      <p><strong>OPT-IN :</strong> ${lead.consentement_optin ? 'Oui ✓' : 'Non ✗'}</p>
+      <p><strong>RGPD :</strong> ${lead.consentement_rgpd ? 'Oui ✓' : 'Non ✗'}</p>
+    </div>
+    
+    <!-- ACTIONS -->
+    <div class="panel-actions">
+      <div class="status-action">
+        <label>Statut : </label>
+        <select id="panelStatusSelect">
+          <option value="nouveau" ${lead.statut === 'nouveau' ? 'selected' : ''}>Nouveau</option>
+          <option value="contacte" ${lead.statut === 'contacte' ? 'selected' : ''}>Contacté</option>
+          <option value="en_discussion" ${lead.statut === 'en_discussion' ? 'selected' : ''}>En discussion</option>
+          <option value="converti" ${lead.statut === 'converti' ? 'selected' : ''}>Converti</option>
+          <option value="perdu" ${lead.statut === 'perdu' ? 'selected' : ''}>Perdu</option>
+        </select>
+        <button onclick="updatePanelStatus()">Mettre à jour</button>
+      </div>
+      <button id="panelRelanceBtn" class="relance-btn" style="display:none" onclick="relancePanelLead()">Relancer</button>
+    </div>
+    
+    <!-- HISTORIQUE RELANCES -->
+    <div class="panel-section">
+      <h4>Historique Relances</h4>
+      <div id="historiqueList">
+        ${lead.historique_relances?.length > 0 ? lead.historique_relances.map(h => `
+          <div class="historique-item">
+            <span>${new Date(h.date).toLocaleString('fr-FR')}</span> - <strong>${h.statut}</strong>
+          </div>
+        `).join('') : 'Aucune relance effectuée'}
+      </div>
+    </div>
+  `;
+  
+  // Check relance due
+  if (isRelanceDue(lead)) {
+    document.getElementById('panelRelanceBtn').style.display = 'block';
+  }
+}
+
+window.updatePanelStatus = async () => {
+  const newStatut = document.getElementById('panelStatusSelect').value;
+  try {
+    const response = await fetch(`${API_BASE}/leads/${currentLead._id}/statut`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ statut: newStatut })
+    });
+    if (response.ok) {
+      showToast('Statut mis à jour');
+      loadLeads(); // Refresh list
+      // Refresh panel
+      if (currentLead) showLeadDetail(currentLead._id);
+    }
+  } catch (error) {
+    console.error('Panel status error:', error);
+  }
+};
+
+window.relancePanelLead = async () => {
+  try {
+    document.getElementById('panelRelanceBtn').disabled = true;
+    document.getElementById('panelRelanceBtn').textContent = 'Relance envoyée ✓';
+    const response = await fetch(`${API_BASE}/leads/${currentLead._id}/relance`, { method: 'POST' });
+    if (response.ok) {
+      showToast('Relance envoyée');
+      // Refresh panel
+      showLeadDetail(currentLead._id);
+    }
+  } catch (error) {
+    console.error('Panel relance error:', error);
+  }
+};
+
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
 }
 
 window.updateStatut = async (id, statut) => {
@@ -98,7 +250,7 @@ async function saveDelais() {
 }
 
 function isRelanceDue(lead) {
-  if (!lead.derniere_relance || !lead.derniere_relance) return true;
+  if (!lead.derniere_relance) return true;
   const delaiHours = delaisConfig[lead.statut] || 24;
   const dueTime = new Date(lead.derniere_relance);
   dueTime.setHours(dueTime.getHours() + delaiHours);
@@ -163,6 +315,17 @@ socket.on('new_lead', (data) => {
 
 socket.on('lead_updated', loadLeads);
 
+// PANEL EVENTS
+closeLeadPanel.onclick = () => {
+  leadDetailPanel.classList.remove('show');
+  panelOverlay.classList.remove('show');
+};
+
+panelOverlay.onclick = () => {
+  leadDetailPanel.classList.remove('show');
+  panelOverlay.classList.remove('show');
+};
+
 // Admin events
 document.getElementById('saveDelais').onclick = saveDelais;
 document.getElementById('loadDelais').onclick = loadDelais;
@@ -171,5 +334,5 @@ document.getElementById('loadDelais').onclick = loadDelais;
 loadDelais();
 loadLeads();
 setInterval(loadLeads, 30000); // 30s
-console.log('Dashboard ready - Délais relance OK');
+console.log('Dashboard ready - Panel détail OK');
 

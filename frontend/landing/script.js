@@ -1,87 +1,95 @@
-// API Base URL
-const API_BASE = 'http://localhost:3000/api';
+// FORMULAIRE 6 ÉTAPES - FIXED SYNTAX ERROR
+let currentStep = 1;
 
-// Chatbot config (proxy endpoint needed)
-const OPENAI_PROXY = `${API_BASE}/chat`; // Backend endpoint to add
+function showStep(n) {
+  // Cache toutes les étapes
+  const steps = document.querySelectorAll('.step');
+  steps.forEach((step, index) => {
+    step.style.display = 'none';
+  });
+  
+  // Montre l'étape n
+  document.querySelector('[data-step="' + n + '"]').style.display = 'block';
+  
+  // Progress bar
+  const progressSteps = document.querySelectorAll('.progress-step');
+  progressSteps.forEach((p, index) => {
+    if (index < n) {
+      p.classList.add('active');
+    } else {
+      p.classList.remove('active');
+    }
+  });
+  
+  currentStep = n;
+}
 
-// Open form
-document.getElementById('openForm').addEventListener('click', () => {
-  document.getElementById('formSection').style.display = 'block';
-  document.getElementById('hero').style.display = 'none'; // Hide hero
-});
-
-// Toggle chatbot
-document.getElementById('openForm').addEventListener('click', () => {
-  document.getElementById('chatbotContainer').style.display = 'flex';
-});
-
-document.getElementById('closeChatbot').addEventListener('click', () => {
-  document.getElementById('chatbotContainer').style.display = 'none';
-});
-
-// Chatbot functionality
-const chatMessages = document.getElementById('chatMessages');
-const chatInput = document.getElementById('chatInput');
-const sendMessageBtn = document.getElementById('sendMessage');
-
-sendMessageBtn.addEventListener('click', sendChatMessage);
-chatInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') sendChatMessage();
-});
-
-async function sendChatMessage() {
-  const message = chatInput.value.trim();
-  if (!message) return;
-
-  addMessage(message, 'user');
-  chatInput.value = '';
-
-  try {
-    const response = await fetch(OPENAI_PROXY, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message })
-    });
-    const data = await response.json();
-    addMessage(data.reply || 'Désolé, je n\'ai pas compris.', 'bot');
-  } catch (error) {
-    addMessage('Erreur connexion. Vérifiez le backend.', 'bot');
+function nextStep(n) {
+  if (n < 6) {
+    showStep(n + 1);
   }
 }
 
-function addMessage(text, sender) {
-  const div = document.createElement('div');
-  div.className = `chat-message ${sender}-message`;
-  div.textContent = text;
-  chatMessages.appendChild(div);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+function prevStep(n) {
+  if (n > 1) {
+    showStep(n - 1);
+  }
 }
 
-// Initial bot message
-addMessage('Bonjour ! Je suis votre assistant assurance santé. Comment puis-je vous aider ? FAQ: mutuelle, devis, couverture...', 'bot');
+// Ouvrir formulaire
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('openForm').addEventListener('click', function() {
+    document.getElementById('formSection').style.display = 'block';
+    document.querySelector('.hero').style.display = 'none';
+    showStep(1);
+  });
 
-// Form submit
-document.getElementById('leadForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const data = Object.fromEntries(formData);
-
-  try {
-    const response = await fetch(`${API_BASE}/leads`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-
-    if (response.ok) {
-      alert('Demande envoyée ! Un courtier vous contacte bientôt.');
-      e.target.reset();
-      document.getElementById('formSection').style.display = 'none';
-    } else {
-      alert('Erreur envoi. Réessayez.');
+  // Submit form
+  document.getElementById('leadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    // Fix arrays
+    const beneficiaires = formData.getAll('beneficiaires[]');
+    const postes = formData.getAll('postes_prioritaires[]');
+    
+    data.beneficiaires = beneficiaires;
+    data.postes_prioritaires = postes;
+    
+    data.nb_personnes = parseInt(data.nb_personnes) || 1;
+    
+    console.log('Envoi:', data);
+    
+    try {
+      const response = await fetch('http://localhost:3000/api/leads', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      
+      if (response.ok) {
+        alert('Devis envoyé !');
+        document.getElementById('formSection').style.display = 'none';
+        document.querySelector('.hero').style.display = 'block';
+      } else {
+        alert('Erreur backend');
+      }
+    } catch (e) {
+      alert('Backend non démarré');
     }
-  } catch (error) {
-    alert('Erreur connexion backend: ' + error.message);
+  });
+  
+  // Chatbot demo
+  const sendBtn = document.getElementById('sendMessage');
+  if (sendBtn) {
+    sendBtn.onclick = function() {
+      const input = document.getElementById('chatInput');
+      const messages = document.getElementById('chatMessages');
+      messages.innerHTML += '<div style="text-align:right;margin:5px 0;">IA: Merci !</div>';
+      input.value = '';
+    };
   }
 });
 

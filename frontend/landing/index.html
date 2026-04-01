@@ -1,80 +1,493 @@
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Assurance Santé - Obtenez votre devis gratuit</title>
-  <link rel="stylesheet" href="style.css">
+  <title>A&M COURTAGE - Mutuelle Santé Optimisée</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; line-height:1.6; color:#2d3748; }
+    .container { max-width:1200px; margin:0 auto; padding:0 24px; }
+    .urgency { background:linear-gradient(90deg,#f97316,#fb923c); color:#fff; padding:16px 0; text-align:center; font-weight:600; position:sticky; top:0; z-index:100; }
+    .urgency:before { content:'⏰ '; }
+    section { padding:80px 0; }
+    .alt-section { background:#f7fafc; }
+    .h-hero { font-size:clamp(2.8rem,8vw,5rem); font-weight:800; background:linear-gradient(135deg,#1e40af 0%,#3b82f6 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.1; margin-bottom:1.5rem; text-align:center; }
+    .h2 { font-size:clamp(1.8rem,5vw,3rem); font-weight:700; color:#1e293b; text-align:center; margin-bottom:2rem; }
+    .btn-primary { background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%); color:#fff; padding:18px 36px; border:none; border-radius:12px; font-size:1.125rem; font-weight:600; cursor:pointer; box-shadow:0 10px 30px rgba(59,130,246,.3); transition:all .3s; text-decoration:none; display:inline-block; }
+    .btn-primary:hover { transform:translateY(-3px); box-shadow:0 20px 40px rgba(59,130,246,.4); }
+    .btn-secondary { background:#64748b; color:#fff; padding:14px 28px; border:none; border-radius:8px; font-weight:500; cursor:pointer; transition:all .3s; }
+    .btn-secondary:hover { background:#475569; }
+    .grid { display:grid; gap:2rem; }
+    .cols3 { grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); }
+    .cols4 { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+    .card { background:#fff; padding:2.5rem; border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,.08); transition:all .4s; border:1px solid #e2e8f0; }
+    .card:hover { transform:translateY(-8px); box-shadow:0 25px 60px rgba(0,0,0,.15); }
+    .hero-card { background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%); padding:3rem 2rem; border-radius:24px; text-align:center; margin:3rem 0; }
+    .icon-hero { font-size:3rem; margin-bottom:1.5rem; display:block; }
+    .urgency-text { font-size:1.1rem; }
+    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:2.5rem; margin:4rem 0; text-align:center; }
+    .stat-num { font-size:clamp(2.5rem,8vw,4.5rem); font-weight:800; background:linear-gradient(135deg,#10b981 0%,#059669 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .stat-label { color:#64748b; font-weight:500; font-size:1.1rem; }
+    .testimonial { background:linear-gradient(135deg,#f8fafc,#f1f5f9); padding:2.5rem; border-radius:20px; margin-bottom:2rem; position:relative; }
+    .stars { color:#fbbf24; font-size:1.5rem; margin:1rem 0; }
+    .profile-grid { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
+    .profile-card { cursor:pointer; transition:all .3s; padding:2rem; border:2px solid #f1f5f9; border-radius:20px; text-align:center; }
+    .profile-card:hover { border-color:#3b82f6; transform:translateY(-6px); box-shadow:0 20px 50px rgba(59,130,246,.15); }
+    .madelin-badge { background:#f97316; color:#fff; padding:8px 16px; border-radius:20px; font-size:.85rem; font-weight:700; margin-bottom:1rem; display:inline-block; }
+    .timeline { display:flex; align-items:center; position:relative; padding:4rem 0; gap:4rem; }
+    .timeline-item { flex:1; text-align:center; position:relative; z-index:2; }
+    .timeline-num { width:64px; height:64px; background:#3b82f6; color:#fff; border-radius:50%; line-height:64px; font-weight:700; font-size:1.5rem; margin:0 auto 1.5rem; box-shadow:0 10px 30px rgba(59,130,246,.3); }
+    .timeline-line { position:absolute; top:50%; left:8%; right:8%; height:4px; background:linear-gradient(to right,#e2e8f0,#3b82f6); z-index:1; }
+    @media (max-width:768px) { .timeline { flex-direction:column; gap:3rem; } .timeline-line { display:none; } }
+    .form-hero { background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%); border-radius:28px; padding:5rem 3rem; margin:4rem 0; box-shadow:0 25px 60px rgba(0,0,0,.08); }
+    .form-title { font-size:2.5rem; font-weight:700; color:#1e293b; margin-bottom:1rem; text-align:center; }
+    .form-subtitle { font-size:1.3rem; color:#64748b; text-align:center; margin-bottom:3rem; }
+    .form-progress { display:flex; gap:12px; margin-bottom:2.5rem; }
+    .progress-dot { width:12px; height:12px; background:#e2e8f0; border-radius:50%; transition:all .3s; box-shadow:0 2px 8px rgba(0,0,0,.1); }
+    .progress-dot.active { background:#3b82f6; transform:scale(1.3); box-shadow:0 0 0 4px rgba(59,130,246,.2); }
+    .form-step { display:none; animation:slideInRight .4s ease; }
+    .form-step.active { display:block; }
+    @keyframes slideInRight { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
+    .form-field { margin-bottom:2rem; }
+    .form-field label { display:block; margin-bottom:10px; font-weight:500; color:#374151; font-size:1rem; }
+    .form-field input, .form-field select, .form-field textarea { width:100%; padding:16px 20px; border:2px solid #e2e8f0; border-radius:14px; font-size:16px; font-family:inherit; transition:border-color .3s,box-shadow .3s; }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color:#3b82f6; outline:none; box-shadow:0 0 0 4px rgba(59,130,246,.1); }
+    .checkbox-list, .radio-list { display:flex; flex-direction:column; gap:16px; }
+    .checkbox-list label, .radio-list label { display:flex; align-items:flex-start; cursor:pointer; padding:12px; border-radius:10px; transition:background .2s; }
+    .checkbox-list label:hover, .radio-list label:hover { background:#f8fafc; }
+    .checkbox-list input, .radio-list input { margin-right:16px; margin-top:3px; flex-shrink:0; width:20px; height:20px; accent-color:#3b82f6; }
+    .form-buttons { display:flex; gap:16px; margin-top:2.5rem; }
+    .btn-nav { padding:16px 32px; border:none; border-radius:12px; font-weight:600; cursor:pointer; transition:all .3s; flex:1; }
+    .btn-prev { background:#64748b; color:#fff; }
+    .btn-prev:hover { background:#475569; }
+    .btn-next { background:#3b82f6; color:#fff; }
+    .btn-next:hover { background:#2563eb; transform:translateY(-2px); }
+    .reassurance-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:2rem; margin:4rem 0; }
+    .reassurance-item { text-align:center; }
+    .reassurance-icon { width:80px; height:80px; margin:0 auto 1.5rem; }
+    .footer { background:#1e293b; color:#cbd5e1; padding:3rem 0 1.5rem; text-align:center; }
+    .footer h3 { font-size:1.75rem; margin-bottom:1.5rem; }
+    .footer-links { display:flex; justify-content:center; gap:2rem; margin-bottom:2rem; flex-wrap:wrap; }
+    .footer-links a { color:#94a3b8; text-decoration:none; font-weight:500; }
+    @media (max-width:768px) { .form-buttons { flex-direction:column; } }
+  </style>
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">Assurance Santé France</div>
-      <div class="nav-links">
-        <a href="#contact">Contact</a>
-        <a href="#chatbot">Chat</a>
-      </div>
-    </nav>
-  </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-content">
-        <h1>Trouvez votre mutuelle santé idéale</h1>
-        <p>Devis gratuit et personnalisé en 2 minutes. Couverture adaptée à vos besoins.</p>
-        <button id="openForm">Demander un devis</button>
-      </div>
-      <div class="chatbot-container" id="chatbotContainer">
-        <div class="chatbot-header">
-          <span>Assistant Assurance</span>
-          <button id="closeChatbot">×</button>
-        </div>
-        <div class="chatbot-messages" id="chatMessages"></div>
-        <div class="chatbot-input">
-          <input type="text" id="chatInput" placeholder="Posez votre question...">
-          <button id="sendMessage">Envoyer</button>
-        </div>
-      </div>
-    </section>
+<!-- URGENCE STICKY -->
+<div class="urgency">⏰ Offre limitée : étude personnalisée offerte cette semaine !</div>
 
-    <section class="form-section" id="formSection" style="display: none;">
-      <form id="leadForm">
-        <h2>Formulaire de demande de devis</h2>
-        <div class="form-group">
-          <label>Nom *</label>
-          <input type="text" name="nom" required>
-        </div>
-        <div class="form-group">
-          <label>Téléphone *</label>
-          <input type="tel" name="telephone" required>
-        </div>
-        <div class="form-group">
-          <label>Email *</label>
-          <input type="email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label>Type de besoin *</label>
-          <select name="type_besoin" required>
-            <option value="">Sélectionnez...</option>
-            <option value="Assurance sante individuelle">Individuelle</option>
-            <option value="Mutuelle familiale">Familiale</option>
-            <option value="Complementaire sante">Complémentaire</option>
-            <option value="Autre">Autre</option>
+<div class="container">
+
+<!-- HERO -->
+<section>
+  <div class="hero-card">
+    <h1 class="h-hero">Payez moins cher pour une mutuelle santé qui vous rembourse vraiment</h1>
+    <p style="font-size:1.4rem;color:#64748b;margin-bottom:3rem;max-width:700px;margin-left:auto;margin-right:auto">
+      Plus de 1 200 assurés accompagnés — Devis gratuit en 2 minutes
+    </p>
+    <button class="btn-primary" onclick="scrollToForm()">Je compare gratuitement →</button>
+    
+    <div style="display:flex;justify-content:center;gap:4rem;margin-top:4rem;flex-wrap:wrap">
+      <div style="text-align:center;opacity:0.9">
+        <div style="font-size:3.5rem;color:#10b981;font-weight:800;margin-bottom:1rem">100%</div>
+        <div style="font-weight:500">Gratuit et sans engagement</div>
+      </div>
+      <div style="text-align:center;opacity:0.9">
+        <div style="font-size:3.5rem;color:#3b82f6;font-weight:800;margin-bottom:1rem">24h</div>
+        <div style="font-weight:500">Réponse garantie</div>
+      </div>
+      <div style="text-align:center;opacity:0.9">
+        <div style="font-size:3.5rem;color:#f97316;font-weight:800;margin-bottom:1rem">ORIAS</div>
+        <div style="font-weight:500">Cabinet agréé</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLÈMES -->
+<section class="alt-section">
+  <h2 class="h2">Votre mutuelle vous <span style="color:#f97316">coûte trop cher</span> ? Vous méritez mieux.</h2>
+  <div class="grid cols3">
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <h3>Trop chère</h3>
+      <p><strong>Problème</strong> : Vous payez une mutuelle qui grève votre budget</p>
+      <p style="color:#10b981;font-weight:600;font-size:1.3rem"><strong>Solution</strong> : Jusqu'à <span style="color:#f97316">40%</span> moins cher</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🦷</div>
+      <h3>Mal remboursée</h3>
+      <p><strong>Problème</strong> : Lunettes et dentaire peu remboursés</p>
+      <p style="color:#10b981;font-weight:600;font-size:1.3rem"><strong>Solution</strong> : Garanties adaptées à <span style="color:#f97316">vos priorités</span></p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <h3>Perdu dans les offres</h3>
+      <p><strong>Problème</strong> : Impossible de comparer 50+ mutuelles</p>
+      <p style="color:#10b981;font-weight:600;font-size:1.3rem"><strong>Solution</strong> : <span style="color:#f97316">Expert indépendant</span></p>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:4rem">
+    <button class="btn-primary" onclick="scrollToForm()">Obtenir mon étude gratuite →</button>
+  </div>
+</section>
+
+<!-- TÉMOIGNAGES -->
+<section>
+  <h2 class="h2">Ils ont changé de mutuelle grâce à A&M COURTAGE</h2>
+  <div class="grid cols3">
+    <div class="testimonial">
+      <p>"<strong>J'économise 47€/mois</strong> avec une meilleure couverture dentaire."</p>
+      <div class="stars">★★★★★</div>
+      <p style="color:#64748b;font-weight:500;margin-top:1rem">Marie L., 54 ans, Lyon</p>
+    </div>
+    <div class="testimonial">
+      <p>"<strong>Auto-entrepreneur</strong>, je déduis ma mutuelle grâce à A&M."</p>
+      <div class="stars">★★★★★</div>
+      <p style="color:#64748b;font-weight:500;margin-top:1rem">Karim B., Paris</p>
+    </div>
+    <div class="testimonial">
+      <p>"<strong>Conseiller parfait</strong> par téléphone."</p>
+      <div class="stars">★★★★★</div>
+      <p style="color:#64748b;font-weight:500;margin-top:1rem">Jacqueline M., Bordeaux</p>
+    </div>
+  </div>
+  <div class="stats">
+    <div><div class="stat-num">1200+</div><div class="stat-label">Clients</div></div>
+    <div><div class="stat-num">40%</div><div class="stat-label">Économies</div></div>
+    <div><div class="stat-num">98%</div><div class="stat-label">Satisfaits</div></div>
+    <div><div class="stat-num">24h</div><div class="stat-label">Réponse</div></div>
+  </div>
+</section>
+
+<!-- PROFILS -->
+<section class="alt-section">
+  <h2 class="h2">Solution pour chaque profil</h2>
+  <div class="grid cols4">
+    <div class="card profile-card" onclick="scrollToForm();document.querySelector('[name=\"regime\"][value=\"Salarié (Régime Général)\"]').checked=true">
+      <h3>Salarié</h3>
+      <p>Individuelle<br><strong style="color:#10b981">30% économies</strong></p>
+    </div>
+    <div class="card profile-card" onclick="scrollToForm();document.querySelector('[name=\"regime\"][value=\"TNS/Indépendant (Loi Madelin)\"]').checked=true">
+      <span class="madelin-badge">Loi Madelin</span>
+      <h3>TNS/Indépendant</h3>
+      <p><strong style="color:#10b981">Déductible</strong></p>
+    </div>
+    <div class="card profile-card" onclick="scrollToForm();document.querySelector('[name=\"regime\"][value=\"Retraité\"]').checked=true">
+      <h3>Retraité</h3>
+      <p>Optique/dentaire<br><strong style="color:#10b981">optimisée</strong></p>
+    </div>
+    <div class="card profile-card" onclick="scrollToForm();document.querySelector('[name=\"regime\"][value=\"Autre\"]').checked=true">
+      <h3>Famille</h3>
+      <p>Conjoint/enfants<br><strong style="color:#10b981">max remboursé</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESSUS -->
+<section>
+  <h2 class="h2" style="margin-bottom:4rem">Simple, rapide, sans engagement</h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-num">1</div>
+      <h3>Formulaire</h3>
+      <p>2 minutes gratuites</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-num">2</div>
+      <h3>Rappel expert</h3>
+      <p>Au créneau choisi</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-num">3</div>
+      <h3>Étude gratuite</h3>
+      <p>Meilleure mutuelle</p>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:4rem">
+    <button class="btn-primary" onclick="scrollToForm()">Commencer maintenant →</button>
+  </div>
+</section>
+
+<!-- FORMULAIRE -->
+<section class="alt-section">
+  <div style="text-align:center;margin-bottom:4rem">
+    <h2 class="h2">Votre étude <span style="color:#10b981">gratuite</span> personnalisée</h2>
+    <p style="font-size:1.4rem;color:#64748b;margin-bottom:1rem">Remplissez — Expert rappelle au créneau choisi</p>
+  </div>
+
+  <div class="form-hero">
+    <div class="form-progress" id="progressBar"></div>
+    
+    <form id="devisForm">
+      <!-- Étape 1 Foyer -->
+      <div class="form-step active" data-step="1">
+        <h3>Étape 1/6 — Composition du foyer</h3>
+        <p style="color:#64748b;margin-bottom:2rem;font-size:1rem">2 minutes suffisent</p>
+        <div class="form-field">
+          <label>Nb personnes</label>
+          <select name="nb_personnes">
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Message</label>
-          <textarea name="message" rows="4"></textarea>
+        <div class="form-field">
+          <label>Bénéficiaires</label>
+          <div class="checkbox-list">
+            <label><input type="checkbox" name="beneficiaires" value="Moi"> Moi</label>
+            <label><input type="checkbox" name="beneficiaires" value="Conjoint"> Conjoint</label>
+            <label><input type="checkbox" name="beneficiaires" value="Enfant(s)"> Enfant(s)</label>
+          </div>
         </div>
-        <label>
-          <input type="checkbox" required> J'accepte le traitement de mes données (RGPD)
-        </label>
-        <button type="submit">Envoyer ma demande</button>
-      </form>
-    </section>
-  </main>
+        <div class="form-field">
+          <label>Situation familiale</label>
+          <div class="radio-list">
+            <label><input type="radio" name="situation_familiale" value="Célibataire"> Célibataire</label>
+            <label><input type="radio" name="situation_familiale" value="Marié(e)/Pacsé(e)/Concubinage"> Marié(e)/Pacsé(e)/Concubinage</label>
+            <label><input type="radio" name="situation_familiale" value="Divorcé(e)"> Divorcé(e)</label>
+            <label><input type="radio" name="situation_familiale" value="Veuf/Veuve"> Veuf/Veuve</label>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="btn-nav btn-next" onclick="goToStep(2)">Suivant</button>
+        </div>
+      </div>
 
-  <script src="script.js"></script>
+      <!-- Étape 2 Régime -->
+      <div class="form-step" data-step="2">
+        <h3>Étape 2/6 — Régime Social</h3>
+        <div class="form-field">
+          <label>Régime</label>
+          <div class="radio-list">
+            <label><input type="radio" name="regime" value="Salarié (Régime Général)"> Salarié (Régime Général)</label>
+            <label><input type="radio" name="regime" value="TNS/Indépendant (Loi Madelin)"> TNS/Indépendant (Loi Madelin)</label>
+            <label><input type="radio" name="regime" value="Retraité"> Retraité</label>
+            <label><input type="radio" name="regime" value="Chomage"> Chomage</label>
+            <label><input type="radio" name="regime" value="Régime Agricole MSA"> Régime Agricole MSA</label>
+            <label><input type="radio" name="regime" value="Fonctionnaire"> Fonctionnaire</label>
+            <label><input type="radio" name="regime" value="Autre"> Autre</label>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="btn-nav btn-prev" onclick="goToStep(1)">Précédent</button>
+          <button type="button" class="btn-nav btn-next" onclick="goToStep(3)">Suivant</button>
+        </div>
+      </div>
+
+      <!-- Étape 3 Besoins -->
+      <div class="form-step" data-step="3">
+        <h3>Étape 3/6 — Besoins actuels</h3>
+        <div class="form-field">
+          <label>Postes prioritaires</label>
+          <div class="checkbox-list">
+            <label><input type="checkbox" name="postes_prioritaires" value="Optique"> Optique</label>
+            <label><input type="checkbox" name="postes_prioritaires" value="Dentaire"> Dentaire</label>
+            <label><input type="checkbox" name="postes_prioritaires" value="Hospitalisation"> Hospitalisation</label>
+            <label><input type="checkbox" name="postes_prioritaires" value="Médecine Naturelle"> Médecine Naturelle</label>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Mutuelle actuelle</label>
+          <input type="text" name="mutuelle_actuelle">
+        </div>
+        <div class="form-field">
+          <label>Tarif mensuel (€)</label>
+          <input type="number" name="tarif_mensuel" step="0.01" min="0">
+        </div>
+        <div class="form-field">
+          <label>Motivation</label>
+          <div class="radio-list">
+            <label><input type="radio" name="motivation" value="Réduire ma cotisation"> Réduire ma cotisation</label>
+            <label><input type="radio" name="motivation" value="Améliorer mes garanties"> Améliorer mes garanties</label>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="btn-nav btn-prev" onclick="goToStep(2)">Précédent</button>
+          <button type="button" class="btn-nav btn-next" onclick="goToStep(4)">Suivant</button>
+        </div>
+      </div>
+
+      <!-- Étape 4 Coordonnées -->
+      <div class="form-step" data-step="4">
+        <h3>Étape 4/6 — Vos coordonnées</h3>
+        <div class="form-field">
+          <label>Nom et Prénom <span style="color:#ef4444">*</span></label>
+          <input type="text" name="nom" required>
+        </div>
+        <div class="form-field">
+          <label>Date de naissance</label>
+          <input type="date" name="date_naissance">
+        </div>
+        <div class="form-field">
+          <label>Adresse (CP + Ville)</label>
+          <input type="text" name="adresse">
+        </div>
+        <div class="form-field">
+          <label>Email <span style="color:#ef4444">*</span></label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="form-field">
+          <label>Téléphone Mobile <span style="color:#ef4444">*</span></label>
+          <input type="tel" name="telephone" required>
+        </div>
+        <div class="form-field">
+          <label>Téléphone Fixe</label>
+          <input type="tel" name="telephone_fixe">
+        </div>
+        <div class="form-field">
+          <label>Créneau rappel</label>
+          <div class="radio-list">
+            <label><input type="radio" name="creneau_rappel" value="Matin 09h-12h"> Matin 09h-12h</label>
+            <label><input type="radio" name="creneau_rappel" value="Déjeuner 12h-14h"> Déjeuner 12h-14h</label>
+            <label><input type="radio" name="creneau_rappel" value="Après-midi 14h-18h"> Après-midi 14h-18h</label>
+            <label><input type="radio" name="creneau_rappel" value="Soir 18h-20h"> Soir 18h-20h</label>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="btn-nav btn-prev" onclick="goToStep(3)">Précédent</button>
+          <button type="button" class="btn-nav btn-next" onclick="goToStep(5)">Suivant</button>
+        </div>
+      </div>
+
+      <!-- Étape 5 Commentaires -->
+      <div class="form-step" data-step="5">
+        <h3>Étape 5/6 — Commentaires libres</h3>
+        <div class="form-field">
+          <label>Zone libre</label>
+          <textarea name="message" rows="6" placeholder="Laissez ici vos commentaires..."></textarea>
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="btn-nav btn-prev" onclick="goToStep(4)">Précédent</button>
+          <button type="button" class="btn-nav btn-next" onclick="goToStep(6)">Validation</button>
+        </div>
+      </div>
+
+      <!-- Étape 6 Consentement -->
+      <div class="form-step" data-step="6">
+        <h3>Étape 6/6 — Validation légale</h3>
+        <div class="form-field">
+          <label style="display:flex;align-items:flex-start;cursor:pointer;font-weight:500">
+            <input type="checkbox" name="consentement_optin" required style="margin:8px 16px 0 0">
+            J'accepte d'être contacté par A&M COURTAGE, même inscrit sur Bloctel
+          </label>
+        </div>
+        <div class="form-field">
+          <label style="display:flex;align-items:flex-start;cursor:pointer;font-weight:500">
+            <input type="checkbox" name="consentement_rgpd" required style="margin:8px 16px 0 0">
+            J'accepte le traitement de mes données personnelles par A&M COURTAGE
+          </label>
+        </div>
+        <div class="mentions">
+          <strong>Cabinet A&M COURTAGE</strong><br>
+          ORIAS 16012345 | Tél: 01 23 45 67 89 | Web: am-courtage.fr
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="btn-nav btn-prev" onclick="goToStep(5)">Précédent</button>
+          <button type="submit" class="btn-nav btn-next">Envoyer demande</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="reassurance-grid">
+    <div class="reassurance-item">
+      <svg viewBox="0 0 24 24" fill="currentColor" class="reassurance-icon">
+        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1 .9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 20c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm2-8h-4V6c0-1.1 .9-2 2-2s2 .9 2 2v6z"/>
+      </svg>
+      <h4>Données sécurisées</h4>
+      <p>Chiffrées et confidentielles</p>
+    </div>
+    <div class="reassurance-item">
+      <svg viewBox="0 0 24 24" fill="currentColor" class="reassurance-icon">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+      </svg>
+      <h4>Cabinet ORIAS</h4>
+      <p>Enregistré n°16012345</p>
+    </div>
+    <div class="reassurance-item">
+      <svg viewBox="0 0 24 24" fill="currentColor" class="reassurance-icon">
+        <path d="M12 2L3 7v10c0 3.31 2.69 6 6 6s6-2.69 6-6V7L12 2zm-1.59 8L7 14l2 2 3.59-3.58L18 16l-2-2-3.41-3.42z"/>
+      </svg>
+      <h4>Rappel garanti</h4>
+      <p>Sous 24h maximum</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <h3>A&M COURTAGE</h3>
+    <div class="footer-links">
+      <a href="#">Mentions légales</a>
+      <a href="#">Confidentialité</a>
+    </div>
+    <p>ORIAS 16012345 | Cabinet indépendant assurance santé | © 2024</p>
+  </div>
+</footer>
+
+</div>
+
+<script>
+let currentStep = 1;
+const steps = document.querySelectorAll('.form-step');
+const progressDots = document.querySelectorAll('.progress-dot');
+
+function goToStep(stepNum) {
+  steps.forEach((step, index) => {
+    step.classList.toggle('active', index + 1 === stepNum);
+  });
+  progressDots.forEach((dot, index) => {
+    dot.classList.toggle('active', index < stepNum);
+  });
+  currentStep = stepNum;
+}
+
+function scrollToForm() {
+  document.querySelector('.form-hero').scrollIntoView({ behavior: 'smooth' });
+}
+
+document.querySelectorAll('.btn-primary, .profile-card').forEach(btn => {
+  btn.addEventListener('click', scrollToForm);
+});
+
+document.getElementById('devisForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  if (!document.querySelector('input[name="consentement_optin"]').checked || 
+      !document.querySelector('input[name="consentement_rgpd"]').checked) {
+    alert('Veuillez cocher les deux cases obligatoires');
+    return;
+  }
+
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData);
+  
+  data.beneficiaires = Array.from(formData.getAll('beneficiaires[]'));
+  data.postes_prioritaires = Array.from(formData.getAll('postes_prioritaires[]'));
+  
+  try {
+    const response = await fetch('http://localhost:3000/api/leads', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    
+    if (response.ok) {
+      e.target.parentElement.innerHTML = '<div class="success"><h2>Merci !</h2><p>Un expert vous rappelle dans les 24h au créneau choisi.</p></div>';
+    } else {
+      alert('Erreur soumission');
+    }
+  } catch (error) {
+    alert('Backend requis: cd backend && npm start');
+  }
+});
+</script>
+
 </body>
 </html>
+
 
