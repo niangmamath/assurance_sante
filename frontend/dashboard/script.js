@@ -32,7 +32,8 @@ function displayLeads(leads) {
       <td>${lead.nom}</td>
       <td>${lead.telephone || ''}<br>${lead.email}</td>
       <td>${lead.type_besoin}</td>
-      <td>${lead.message.substring(0, 50)}...</td>
+      <td title="${lead.message}">${lead.message}</td>
+
       <td>
         <select onchange="updateStatut('${lead._id}', this.value)" class="status-select">
           <option value="nouveau" ${lead.statut === 'nouveau' ? 'selected' : ''}>Nouveau</option>

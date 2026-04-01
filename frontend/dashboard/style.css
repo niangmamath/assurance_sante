@@ -107,11 +107,63 @@ nav { display: flex; justify-content: space-between; padding: 1rem 2rem; backgro
 
 .stat-card h3 { color: #666; margin-bottom: 0.5rem; }
 
-.leads-section { background: white; margin: 2rem; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.leads-section { 
+  background: white; 
+  margin: 1rem; 
+  padding: 1rem; 
+  border-radius: 10px; 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+  overflow-x: auto;
+}
 
-#leadsTable { width: 100%; border-collapse: collapse; }
+.table-wrapper {
+  overflow-x: auto;
+  min-width: 850px;
+}
 
-th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+
+#leadsTable { 
+  width: 100%; 
+  table-layout: fixed; 
+  border-collapse: collapse;
+  word-wrap: break-word;
+}
+
+
+#leadsTable { 
+  width: 100%; 
+  table-layout: fixed; 
+  border-collapse: collapse;
+  word-break: break-word;
+}
+
+
+th, td { 
+  padding: 0.5rem 0.3rem; 
+  text-align: left; 
+  border-bottom: 1px solid #eee; 
+  font-size: 0.9rem;
+}
+
+th:nth-child(1), td:nth-child(1) { width: 10%; min-width: 120px; } /* Date */
+th:nth-child(2), td:nth-child(2) { width: 12%; min-width: 100px; } /* Nom */
+th:nth-child(3), td:nth-child(3) { width: 15%; min-width: 140px; } /* Contact */
+th:nth-child(4), td:nth-child(4) { width: 12%; min-width: 110px; } /* Besoin */
+th:nth-child(5), td:nth-child(5) { width: 25%; } /* Message */
+th:nth-child(6), td:nth-child(6) { width: 10%; min-width: 80px; } /* Statut */
+th:nth-child(7), td:nth-child(7) { width: 8%; min-width: 60px; } /* Relances */
+th:nth-child(8), td:nth-child(8) { width: 8%; min-width: 80px; } /* Actions */
+
+
+th:nth-child(1), td:nth-child(1) { width: 12%; } /* Date */
+th:nth-child(2), td:nth-child(2) { width: 12%; } /* Nom */
+th:nth-child(3), td:nth-child(3) { width: 18%; } /* Contact */
+th:nth-child(4), td:nth-child(4) { width: 15%; } /* Besoin */
+th:nth-child(5), td:nth-child(5) { width: 20%; } /* Message */
+th:nth-child(6), td:nth-child(6) { width: 10%; } /* Statut */
+th:nth-child(7), td:nth-child(7) { width: 8%; } /* Relances */
+th:nth-child(8), td:nth-child(8) { width: 5%; } /* Actions */
+
 
 th { background: #f8f9fa; font-weight: bold; }
 
@@ -119,7 +171,17 @@ th { background: #f8f9fa; font-weight: bold; }
 
 @keyframes highlight { 0% { background: #c8e6c9; } 100% { background: transparent; } }
 
-.relance-btn { background: #ff9800; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; }
+.relance-btn { 
+  background: #ff9800; 
+  color: white; 
+  border: none; 
+  padding: 0.4rem 0.6rem; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
 
 .relance-btn:hover { background: #f57c00; }
 
@@ -136,13 +198,15 @@ th { background: #f8f9fa; font-weight: bold; }
 .status.perdu { background: #f44336; color: white; }
 
 .status-select {
-  padding: 0.3rem 0.5rem;
-  border-radius: 5px;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
   border: 1px solid #ddd;
   background: white;
-  font-size: 0.8rem;
-  min-width: 100px;
+  font-size: 0.75rem;
+  min-width: 75px;
+  max-width: 75px;
 }
+
 
 .admin-section { background: white; margin: 2rem; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
@@ -150,7 +214,9 @@ th { background: #f8f9fa; font-weight: bold; }
 
 @media (max-width: 768px) {
   .stats { flex-direction: column; }
-  #leadsTable { font-size: 0.9rem; }
-  th, td { padding: 0.5rem; }
+  .leads-section { margin: 0.5rem; padding: 0.5rem; }
+  th, td { padding: 0.4rem 0.2rem; font-size: 0.8rem; }
+  th:nth-child(3), td:nth-child(3) { font-size: 0.7rem; }
 }
+
 
