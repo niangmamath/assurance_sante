@@ -12,18 +12,58 @@ const leadSchema = new mongoose.Schema({
     trim: true,
     lowercase: true
   },
-  telephone: {
-    type: String,
-    required: true
-  },
-  type_besoin: {
-    type: String,
-    required: true,
-    enum: ['Assurance sante individuelle', 'Mutuelle familiale', 'Complementaire sante', 'Autre']
-  },
+ 
   message: {
     type: String,
-    required: true
+    // Rétrocompatibilité : anciens leads l'exigent
+  },
+  // NOUVEAUX CHAMPS (optionnels sauf consents validés backend)
+  date_naissance: {
+    type: String
+  },
+  adresse: {
+    type: String
+  },
+  telephone_fixe: {
+    type: String
+  },
+  nb_personnes: {
+    type: Number
+  },
+  beneficiaires: [String],
+  situation_familiale: {
+    type: String
+  },
+  regime: {
+    type: String
+  },
+  madelin_flag: {
+    type: Boolean,
+    default: false
+  },
+  postes_prioritaires: [String],
+  mutuelle_actuelle: {
+    type: String
+  },
+  tarif_mensuel: {
+    type: Number
+  },
+  motivation: {
+    type: String
+  },
+  creneau_rappel: {
+    type: String
+  },
+  commentaire: {
+    type: String
+  },
+  consentement_optin: {
+    type: Boolean,
+    default: false
+  },
+  consentement_rgpd: {
+    type: Boolean,
+    default: false
   },
   statut: {
     type: String,

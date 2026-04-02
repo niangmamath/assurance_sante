@@ -4,6 +4,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
@@ -12,15 +13,17 @@ const io = socketIo(server, {
     origin: true,
     methods: ['GET', 'POST']
   }
-}); // Fix Socket CORS
+});
 
 // Middleware
 app.use(cors({
   origin: true,
   credentials: true
-})); // Fix CORS frontend static
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Basic route
 app.get('/', (req, res) => {
@@ -50,5 +53,6 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log('Test: curl http://localhost:3000/');
+  console.log(`Landing page: http://localhost:${PORT}/landing`);
+  console.log(`Dashboard: http://localhost:${PORT}/dashboard`);
 });
-

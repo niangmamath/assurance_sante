@@ -180,10 +180,24 @@ th { background: #f8f9fa; font-weight: bold; }
   cursor: pointer; 
   font-size: 0.8rem;
   white-space: nowrap;
+  margin-right: 0.3rem;
 }
 
 
 .relance-btn:hover { background: #f57c00; }
+.relance-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+.detail-btn {
+  background: #2196f3;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.detail-btn:hover { background: #1976d2; }
 
 .status { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
 
@@ -212,11 +226,217 @@ th { background: #f8f9fa; font-weight: bold; }
 
 #liveIndicator { color: #4caf50; }
 
+/* PANEL LATÉRAL NOUVEAU */
+.lead-detail-panel {
+  position: fixed;
+  top: 0;
+  right: -500px;
+  width: 450px;
+  height: 100vh;
+  background: white;
+  box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+  z-index: 2000;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.lead-detail-panel.show {
+  right: 0;
+}
+
+.panel-header {
+  background: #2c5aa0;
+  color: white;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.close-btn {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.panel-body {
+  padding: 2rem;
+  flex: 1;
+}
+
+.panel-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.panel-section h4 {
+  color: #2c5aa0;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.panel-section p {
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+}
+
+.madelin-badge {
+  background: #ff9800;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.highlight {
+  background: #fff3cd;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.panel-actions {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-top: 1px solid #dee2e6;
+  margin-top: auto;
+}
+
+.status-action {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.status-action label {
+  font-weight: bold;
+  min-width: 60px;
+}
+
+.status-action select {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.status-action button {
+  background: #2c5aa0;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.historique-item {
+  background: #f8f9fa;
+  padding: 0.8rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  border-left: 4px solid #2c5aa0;
+}
+
+.panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1500;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.panel-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 3000;
+  animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
 @media (max-width: 768px) {
   .stats { flex-direction: column; }
   .leads-section { margin: 0.5rem; padding: 0.5rem; }
   th, td { padding: 0.4rem 0.2rem; font-size: 0.8rem; }
   th:nth-child(3), td:nth-child(3) { font-size: 0.7rem; }
+  .lead-detail-panel { width: 100%; right: -100%; }
 }
 
+/* Style bouton suppression */
+.delete-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 4px;
+  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-btn:hover {
+  background: #d32f2f;
+  transform: scale(1.05);
+}
+
+.relance-btn, .detail-btn, .delete-btn {
+  margin-right: 4px;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 10000;
+  transform: translateX(400px);
+  transition: transform 0.3s ease;
+}
+
+.toast.show {
+  transform: translateX(0);
+}
 

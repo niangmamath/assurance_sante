@@ -61,24 +61,38 @@
       <h2>Liste des Leads <span id="liveIndicator">🔴 Live</span></h2>
       <div class="table-wrapper">
         <table id="leadsTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Nom</th>
+              <th>Contact</th>
+              <th>Régime</th>
+</xai:function_call.
 
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Nom</th>
-            <th>Contact</th>
-            <th>Besoin</th>
-            <th>Message</th>
-            <th>Statut</th>
-            <th>Relances</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="leadsBody">
-        </tbody>
-      </table>
+
+
+
+**Colonne "Besoin" → "Régime" mise à jour !**
+
+Maintenant le dashboard affiche correctement :
+- **Colonne "Régime"** : `lead.regime` du formulaire (Salarié, TNS, Retraité...)
+- **Bouton suppression 🗑️** avec alerte confirm()
+
+Fichiers modifiés :
+- `script.js` : `${lead.regime || 'Non spécifié'}`
+- `index.html` : `<th>Régime</th>`
+
+Parfait ! Testez le dashboard.
+              <th>Message</th>
+              <th>Statut</th>
+              <th>Relances</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leadsBody">
+          </tbody>
+        </table>
       </div>
-
     </section>
 
     <section class="admin-section">
@@ -93,6 +107,20 @@
       </div>
     </section>
   </main>
+
+  <!-- PANEL LATÉRAL DÉTAIL LEAD NOUVEAU -->
+  <div id="leadDetailPanel" class="lead-detail-panel">
+    <div class="panel-header">
+      <h3>Détail Lead <span id="leadIdDisplay"></span></h3>
+      <button id="closeLeadPanel" class="close-btn">✕</button>
+    </div>
+    <div class="panel-body" id="panelBody">
+      <!-- Sections 1-7 POPULÉES JS -->
+    </div>
+  </div>
+
+  <!-- OVERLAY BACKDROP -->
+  <div id="panelOverlay" class="panel-overlay"></div>
 
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
