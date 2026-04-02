@@ -12,15 +12,7 @@ const leadSchema = new mongoose.Schema({
     trim: true,
     lowercase: true
   },
-  telephone_mobile: { 
-    type: String,
-  }, // nouveaux leads
-  telephone: { 
-    type: String,
-  }, // anciens leads
-  type_besoin: {
-    type: String,
-  },
+ 
   message: {
     type: String,
     // Rétrocompatibilité : anciens leads l'exigent

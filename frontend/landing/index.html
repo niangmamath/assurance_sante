@@ -1127,14 +1127,11 @@ footer {
             <label>Email <span class="req">*</span></label>
             <input type="email" id="email" placeholder="jean@email.com">
           </div>
-          <div class="field">
-            <label>Téléphone Mobile (prioritaire) <span class="req">*</span></label>
-            <input type="tel" id="telephone" placeholder="+33 6 XX XX XX XX">
-          </div>
+          
         </div>
 
         <div class="field">
-          <label>Téléphone Fixe (optionnel)</label>
+          <label>Téléphone mobile (à remplir)</label>
           <input type="tel" id="telephone_fixe" placeholder="+33 1 XX XX XX XX">
         </div>
 
@@ -1331,7 +1328,7 @@ function validateStep(n) {
   if (n === 4) {
     var nom = document.getElementById('nom').value.trim();
     var email = document.getElementById('email').value.trim();
-    var tel = document.getElementById('telephone').value.trim();
+    var tel = document.getElementById('telephone_fixe').value.trim();
     var creneau = document.querySelector('input[name="creneau"]:checked');
     if (!nom) { alert('Veuillez indiquer votre nom et prénom.'); return false; }
     if (!email || !email.includes('@')) { alert('Veuillez saisir un email valide.'); return false; }
@@ -1375,7 +1372,7 @@ function submitForm() {
     date_naissance:      document.getElementById('date_naissance').value,
     adresse:             document.getElementById('adresse').value,
     email:               document.getElementById('email').value,
-    telephone_mobile:    document.getElementById('telephone').value,
+   
     telephone_fixe:      document.getElementById('telephone_fixe').value,
     creneau_rappel:      (document.querySelector('input[name="creneau"]:checked') || {value:''}).value,
     commentaire:         document.getElementById('commentaire').value,

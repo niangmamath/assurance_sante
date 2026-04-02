@@ -92,8 +92,8 @@ function populatePanel(lead) {
       <p><strong>Date naissance :</strong> ${lead.date_naissance || 'Non renseigné'}</p>
       <p><strong>Adresse :</strong> ${lead.adresse || 'Non renseigné'}</p>
       <p><strong>Email :</strong> ${lead.email || 'Non renseigné'}</p>
-      <p><strong>Tél mobile :</strong> ${lead.telephone_mobile || lead.telephone || 'Non renseigné'}</p>
-      <p><strong>Tél fixe :</strong> ${lead.telephone_fixe || 'Non renseigné'}</p>
+      
+      <p><strong>Tél mobile :</strong> ${lead.telephone_fixe || 'Non renseigné'}</p>
     </div>
 
     <div class="panel-section">
