@@ -12,14 +12,14 @@ const leadSchema = new mongoose.Schema({
     trim: true,
     lowercase: true
   },
-  telephone: {
+  telephone_mobile: { 
     type: String,
-    required: true
-  },
+  }, // nouveaux leads
+  telephone: { 
+    type: String,
+  }, // anciens leads
   type_besoin: {
     type: String,
-    required: true,
-    enum: ['Assurance sante individuelle', 'Mutuelle familiale', 'Complementaire sante', 'Autre']
   },
   message: {
     type: String,
