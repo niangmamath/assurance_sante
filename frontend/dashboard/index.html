@@ -66,7 +66,23 @@
               <th>Date</th>
               <th>Nom</th>
               <th>Contact</th>
-              <th>Besoin</th>
+              <th>Régime</th>
+</xai:function_call.
+
+
+
+
+**Colonne "Besoin" → "Régime" mise à jour !**
+
+Maintenant le dashboard affiche correctement :
+- **Colonne "Régime"** : `lead.regime` du formulaire (Salarié, TNS, Retraité...)
+- **Bouton suppression 🗑️** avec alerte confirm()
+
+Fichiers modifiés :
+- `script.js` : `${lead.regime || 'Non spécifié'}`
+- `index.html` : `<th>Régime</th>`
+
+Parfait ! Testez le dashboard.
               <th>Message</th>
               <th>Statut</th>
               <th>Relances</th>

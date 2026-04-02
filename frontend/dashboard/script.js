@@ -37,7 +37,14 @@ function displayLeads(leads) {
       <td>${new Date(lead.timestamp).toLocaleString('fr-FR')}</td>
       <td>${lead.nom}</td>
       <td>${lead.telephone || ''}<br>${lead.email}</td>
-      <td>${lead.type_besoin}</td>
+      <td>${lead.regime || 'Non spécifié'}</td>
+</xai:function_call.
+
+
+
+
+<xai:function_call name="edit_file">
+<parameter name="path">c:/Users/hp/Desktop/projet_assurance santé/frontend/dashboard/index.html
       <td title="${lead.message}">${lead.message?.substring(0,50)}...</td>
       <td>
         <select onchange="updateStatut('${lead._id}', this.value)" class="status-select">
@@ -52,8 +59,10 @@ function displayLeads(leads) {
       <td>
         ${showRelance ? `<button class="relance-btn" onclick="relanceLead('${lead._id}')">Relancer</button>` : '<span style="color:green">OK</span>'}
         <button class="detail-btn" onclick="showLeadDetail('${lead._id}')" title="Détail">👁️</button>
+        <button class="delete-btn" onclick="deleteLead('${lead._id}')" title="Supprimer">🗑️</button>
       </td>
     `;
+
     leadsBody.appendChild(row);
   });
 }
@@ -306,6 +315,28 @@ function updatePieChart(counts) {
   });
 }
 
+// Fonction suppression lead
+window.deleteLead = async (id) => {
+  if (!confirm('Supprimer définitivement ce lead ?')) return;
+  
+  try {
+    const response = await fetch(`${API_BASE}/leads/${id}`, { method: 'DELETE' });
+    if (response.ok) {
+      showToast('Lead supprimé');
+      loadLeads();
+      if (currentLead && currentLead._id === id) {
+        leadDetailPanel.classList.remove('show');
+        panelOverlay.classList.remove('show');
+      }
+    } else {
+      alert('Erreur suppression');
+    }
+  } catch (error) {
+    console.error('Delete error:', error);
+    alert('Erreur réseau');
+  }
+};
+
 // Socket events
 socket.on('new_lead', (data) => {
   liveIndicator.textContent = '🟢 Nouveau lead !';
@@ -314,6 +345,7 @@ socket.on('new_lead', (data) => {
 });
 
 socket.on('lead_updated', loadLeads);
+
 
 // PANEL EVENTS
 closeLeadPanel.onclick = () => {

@@ -394,3 +394,49 @@ th { background: #f8f9fa; font-weight: bold; }
   .lead-detail-panel { width: 100%; right: -100%; }
 }
 
+/* Style bouton suppression */
+.delete-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 4px;
+  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-btn:hover {
+  background: #d32f2f;
+  transform: scale(1.05);
+}
+
+.relance-btn, .detail-btn, .delete-btn {
+  margin-right: 4px;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 10000;
+  transform: translateX(400px);
+  transition: transform 0.3s ease;
+}
+
+.toast.show {
+  transform: translateX(0);
+}
+
