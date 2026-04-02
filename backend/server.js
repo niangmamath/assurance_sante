@@ -12,13 +12,13 @@ const io = socketIo(server, {
     origin: true,
     methods: ['GET', 'POST']
   }
-}); // Fix Socket CORS
+});
 
 // Middleware
 app.use(cors({
   origin: true,
   credentials: true
-})); // Fix CORS frontend static
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -51,4 +51,3 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log('Test: curl http://localhost:3000/');
 });
-
