@@ -1,7 +1,21 @@
 {
-  "nouveau": 24,
-  "contacte": 48,
-  "en_discussion": 72,
-  "perdu": 168,
+  "confirmation": 0,
+  "relance1": {
+    "min": 0,
+    "max": 72
+  },
+  "relance2": {
+    "min": 0,
+    "max": 168
+  },
+  "relance3": {
+    "min": 0,
+    "max": 336
+  },
+  "relance4": {
+    "min": 0,
+    "max": 504
+  },
+  "max_relances": 4,
   "timestamp": "2025-01-01T00:00:00Z"
 }

@@ -82,9 +82,29 @@ router.post('/', async (req, res) => {
       req.memoryLeads.unshift(lead);
     }
 
-    // EMIT ENRICHIE new_lead
+    // EMIT + TRIGGER CONFIRMATION IMMÉDIAT n8n
     req.io.emit('new_lead', lead);
-    res.json({ message: 'Lead created', lead });
+    
+    // Confirmation email immédiat
+    const n8nBase = process.env.N8N_WEBHOOK_BASE_URL || 'https://centrale.app.n8n.cloud/webhook/am-relance';
+    if (n8nBase) {
+      const confirmUrl = `${n8nBase}/confirmation-immediat`;
+      try {
+        await fetch(confirmUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            lead: lead,
+            type: 'confirmation' 
+          })
+        });
+        console.log('✅ Confirmation n8n triggered:', confirmUrl);
+      } catch (confirmErr) {
+        console.error('Confirmation n8n failed:', confirmErr.message);
+      }
+    }
+    
+    res.json({ message: 'Lead created + confirmation envoyée', lead });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -169,43 +189,94 @@ router.put('/config/delais', async (req, res) => {
   }
 });
 
-// POST /api/leads/:id/relance
+// POST /api/leads/:id/relance - AUTOMATISATION COMPLÈTE
 router.post('/:id/relance', async (req, res) => {
   try {
+    const delaisRaw = await fs.readFile(delaisPath, 'utf8');
+    const delais = JSON.parse(delaisRaw);
+    const maxRelances = delais.max_relances || 4;
+
     let lead;
     try {
       lead = await Lead.findById(req.params.id);
-      if (lead) {
-        lead.derniere_relance = new Date();
-        lead.nb_relances += 1;
-        lead.historique_relances.push({
-          date: new Date(),
-          statut: lead.statut,
-          template_used: `relance_${lead.statut}`
-        });
-        await lead.save();
-      }
     } catch (e) {
       lead = req.memoryLeads.find(l => l._id === req.params.id);
-      if (lead) {
-        lead.derniere_relance = new Date();
-        lead.nb_relances += 1;
-        lead.historique_relances.push({
-          date: new Date(),
-          statut: lead.statut,
-          template_used: `relance_${lead.statut}`
-        });
-      }
     }
 
     if (!lead) return res.status(404).json({ error: 'Lead not found' });
 
-    const n8nUrl = process.env.N8N_WEBHOOK_BASE_URL ? `${process.env.N8N_WEBHOOK_BASE_URL}relance-${lead.statut}` : null;
-    if (n8nUrl) console.log('n8n:', n8nUrl);
+    // Vérif max relances
+    if (lead.nb_relances >= maxRelances) {
+      return res.status(400).json({ error: `Max ${maxRelances} relances atteintes` });
+    }
+
+    // Calcule next relance number (1-based)
+    const nextRelanceNum = lead.nb_relances + 1;
+    const relanceKey = `relance${nextRelanceNum}`;
+    
+    if (!delais[relanceKey]) {
+      return res.status(400).json({ error: `Config manquante pour ${relanceKey}` });
+    }
+
+    const delai = delais[relanceKey];
+    
+// Vérif délai min DESACTIVÉE pour tests manuels
+    console.log('Délai check bypassed - relance immédiate OK');
+
+    // OK: Update lead
+    const templateUsed = relanceKey;
+    try {
+      lead.derniere_relance = new Date();
+      lead.nb_relances += 1;
+      lead.historique_relances.push({
+        date: new Date(),
+        statut: lead.statut,
+        template_used: templateUsed
+      });
+      await lead.save();
+    } catch (e) {
+      // Memory update
+      if (lead) {
+        lead.derniere_relance = new Date();
+        lead.nb_relances += 1;
+        lead.historique_relances.push({
+          date: new Date(),
+          statut: lead.statut,
+          template_used: templateUsed
+        });
+      }
+    }
+
+    // Trigger n8n
+    const n8nUrl = 'https://centrale.app.n8n.cloud/webhook/relance-client';
+    try {
+      await fetch(n8nUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          body: {
+            nom: lead.nom,
+            email: lead.email,
+            statut: lead.statut,
+            besoin: lead.type_besoin || lead.message,
+            message: 'Relance automatique',
+            nb_relances: lead.nb_relances
+          }
+        })
+      });
+      console.log(`✅ n8n relance${lead.nb_relances + 1} triggered:`, n8nUrl);
+    } catch (n8nErr) {
+      console.error('n8n trigger failed:', n8nErr.message);
+    }
 
     req.io.emit('lead_updated', lead);
-    res.json({ message: 'Relance OK' });
+    res.json({ 
+      message: `Relance ${nextRelanceNum}/4 OK (${templateUsed})`,
+      nextRelanceNum,
+      lead 
+    });
   } catch (error) {
+    console.error('Relance error:', error);
     res.status(500).json({ error: error.message });
   }
 });

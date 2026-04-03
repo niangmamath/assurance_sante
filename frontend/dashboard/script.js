@@ -255,23 +255,36 @@ async function saveDelais() {
   }
 }
 
+async function loadDelaisConfig() {
+  try {
+    const response = await fetch(`${API_BASE}/leads/config/delais`);
+    delaisConfig = await response.json();
+  } catch (e) {
+    console.log('Delais load failed, using legacy');
+  }
+}
+
 function isRelanceDue(lead) {
-  if (!lead.derniere_relance) return true;
-  const delaiHours = delaisConfig[lead.statut] || 24;
-  const dueTime = new Date(lead.derniere_relance);
-  dueTime.setHours(dueTime.getHours() + delaiHours);
-  return new Date() > dueTime;
+  // TOUJOURS AFFICHER BOUTON RELANCER (pour tests manuels)
+  console.log('Bouton relancer toujours visible');
+  return true;
 }
 
 window.relanceLead = async (id) => {
   try {
     const response = await fetch(`${API_BASE}/leads/${id}/relance`, { method: 'POST' });
-    if (response.ok) loadLeads();
+    const data = await response.json();
+    console.log('Status:', response.status, 'Data:', data); // ← ajoute ça
+    if (response.ok) {
+      showToast('Relance envoyée ✓');
+      loadLeads();
+    } else {
+      alert('Erreur : ' + data.error);
+    }
   } catch (error) {
     console.error('Relance error:', error);
   }
 };
-
 let pieChart = null;
 
 function updateStats(leads) {
