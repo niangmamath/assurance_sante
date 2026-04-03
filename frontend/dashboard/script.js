@@ -1,5 +1,5 @@
-const API_BASE = 'http://localhost:3000/api';
-const socket = io('http://localhost:3000');
+const API_BASE = window.location.origin + '/api';
+const socket = io(window.location.origin);
 
 // DOM
 const leadsBody = document.getElementById('leadsBody');

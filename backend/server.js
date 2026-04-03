@@ -46,6 +46,16 @@ app.use('/api/leads', (req, res, next) => {
 }, leadsRouter);
 app.use('/api/chat', chatRouter);
 
+// SPA FALLBACK ROUTES (local + prod Hostinger) - Après TOUTES les API routes
+app.get('/landing', (req, res) => res.sendFile(path.join(__dirname, '../frontend/landing/index.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '../frontend/dashboard/index.html')));
+
+// Catch-all pour refresh SPA (dev/pro)
+app.get(/^\/(landing|dashboard)/, (req, res, next) => {
+  const page = req.path.split('/')[1];
+  res.sendFile(path.join(__dirname, `../frontend/${page}/index.html`));
+});
+
 const connectDB = require('./config/db.js');
 connectDB().catch(console.error); // Non-bloquant
 
