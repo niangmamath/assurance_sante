@@ -63,7 +63,8 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Envoi:', data);
     
     try {
-      const response = await fetch('http://localhost:3000/api/leads', {
+      const API_URL = window.location.origin + '/api/leads';
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
@@ -84,12 +85,40 @@ document.addEventListener('DOMContentLoaded', function() {
   // Chatbot demo
   const sendBtn = document.getElementById('sendMessage');
   if (sendBtn) {
-    sendBtn.onclick = function() {
+    sendBtn.onclick = async function() {
       const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      if (!message) return;
+      
       const messages = document.getElementById('chatMessages');
-      messages.innerHTML += '<div style="text-align:right;margin:5px 0;">IA: Merci !</div>';
+      messages.innerHTML += `<div style="text-align:right;margin:5px 0;"><div style="background:#2c5aa0;color:white;padding:8px 12px;border-radius:18px;max-width:80%;display:inline-block;">${escapeHtml(message)}</div></div>`;
       input.value = '';
+      
+      // Show typing
+      const typing = document.createElement('div');
+      typing.innerHTML = '<div style="background:#e3f2fd;padding:8px 12px;border-radius:18px;margin:5px 0;">IA tape...</div>';
+      messages.appendChild(typing);
+      
+      try {
+        const response = await fetch(window.location.origin + '/api/chat', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({message})
+        });
+        const data = await response.json();
+        messages.removeChild(typing);
+        messages.innerHTML += `<div style="text-align:left;margin:5px 0;"><div style="background:#e3f2fd;padding:8px 12px;border-radius:18px;max-width:80%;display:inline-block;">${escapeHtml(data.reply)}</div></div>`;
+      } catch(e) {
+        messages.removeChild(typing);
+        messages.innerHTML += '<div style="text-align:left;margin:5px 0;"><div style="background:#e3f2fd;padding:8px 12px;border-radius:18px;">Erreur connexion IA</div></div>';
+      }
     };
   }
 });
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
 

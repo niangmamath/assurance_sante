@@ -1,30 +1,45 @@
-# Implémentation Système Automatisation n8n - Relances Complètes
+# Fix Production Hostinger - /landing & /dashboard
+✅ **Plan Approuvé** (local + prod compatible)
 
-## Plan approuvé - Progression
+## **Étapes (5)**
 
-### 1. ✅ Créer TODO.md (fait)
+### 1. **Edit backend/server.js** (SPA fallback)
+- Ajouter routes catch-all après API: /landing, /dashboard → index.html correspondant
+- Local OK (déjà express.static), prod OK (strict routing)
 
-### 2. ✅ Mettre à jour backend/config/delais.json (fait)
+### 2. **Edit frontend/landing/script.js** 
+- `fetch` → window.location.origin + '/api/leads' (local: localhost:3000, prod: domaine)
 
-### 3. ✅ Éditer backend/routes/leads.js
-- ✅ POST /leads: Trigger n8n confirmation immédiat  
-- ✅ POST /relance: Vérif délais/nb/max, sélection template, trigger n8n correspondant
+### 3. **Edit frontend/dashboard/script.js**
+- `API_BASE = window.location.origin + '/api'`
+- Socket.io → window.location.origin
 
-### 4. ✅ Éditer frontend/dashboard/script.js
-- ✅ isRelanceDue(): Ajouter check nb_relances < 4
-- ✅ UI: Afficher \"Relance #X/4\" + cacher si max atteint
+### 4. **Test Local**
+```
+cd backend && npm start
+→ http://localhost:3000/landing → submit → dashboard live + relance
+```
 
-### 5. ✅ Créer n8n workflows
-- ✅ confirmation-immediat.json
-- ✅ relance1.json
-- ✅ relance2.json  
-- ✅ relance3.json, relance4.json
+### 5. **Deploy & Test Prod**
+- Copie fichiers Hostinger
+- Restart app (`npm start` ou PM2)
+- Test https://assurance.ubuntudigit.com/landing → /dashboard
 
-### 6. ✅ Mettre à jour README.md (fait)
+**Progression**: [✅] 1 [✅] 2 [✅] 3 [🔄] 4 [ ] 5
 
-### 7. ✅ Test & Completion
-- Backend démarré → Lead submit → Confirmation n8n
-- Dashboard → Bouton "Relance #1/4" → Vérif délais → relance1 n8n
-- Séquence complète 1→4 relances (max)
+**🚀 Test Local en cours**:
+```
+npx kill-port 3000 → OK
+cd backend; npm start → Serveur v2.0 démarré
+```
+Testez maintenant:
+- http://localhost:3000/landing (form + chat IA)
+- Submit → http://localhost:3000/dashboard (live + relance)
 
-**✅ IMPLEMENTATION TERMINÉE**
+**✅ si OK** → Étape 5 deploy Hostinger.
+
+**✅ Étape 1**: server.js → Routes SPA fallback OK
+**✅ Étape 2-3**: landing + dashboard scripts → window.location.origin OK
+**✅ Chat landing**: OpenAI fonctionnel
+
+**🚀 PROCHAIN**: Test local `cd backend; npm start` puis Étape 4.
