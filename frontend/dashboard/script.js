@@ -1,6 +1,77 @@
 const API_BASE = window.location.origin + '/api';
 const socket = io(window.location.origin);
 
+// AUTHENTIFICATION LOGIC
+const loginOverlay = document.getElementById('loginOverlay');
+const loginForm = document.getElementById('loginForm');
+const loginErrorMsg = document.getElementById('loginErrorMsg');
+
+function getToken() {
+  return localStorage.getItem('adminToken');
+}
+
+function checkAuthAndInit() {
+  if (!getToken()) {
+    loginOverlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  } else {
+    loginOverlay.classList.add('hidden');
+    document.body.style.overflow = '';
+    loadDelais();
+    loadLeads();
+  }
+}
+
+async function apiFetch(url, options = {}) {
+  const token = getToken();
+  if (!options.headers) options.headers = {};
+  if (token) options.headers['Authorization'] = `Bearer ${token}`;
+  
+  const response = await fetch(url, options);
+  if (response.status === 401 || response.status === 403) {
+    localStorage.removeItem('adminToken');
+    loginOverlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    throw new Error('Session expirée');
+  }
+  return response;
+}
+
+if (loginForm) {
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const btn = document.getElementById('loginSubmitBtn');
+    
+    try {
+      btn.textContent = 'Connexion...';
+      btn.disabled = true;
+      loginErrorMsg.textContent = '';
+      
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        localStorage.setItem('adminToken', data.token);
+        loginForm.reset();
+        checkAuthAndInit();
+      } else {
+        loginErrorMsg.textContent = data.error || 'Identifiants incorrects';
+      }
+    } catch (err) {
+      loginErrorMsg.textContent = 'Erreur réseau';
+    } finally {
+      btn.textContent = 'Se connecter';
+      btn.disabled = false;
+    }
+  });
+}
+
 // DOM
 const leadsBody = document.getElementById('leadsBody');
 const newLeadsCount = document.getElementById('newLeadsCount');
@@ -17,7 +88,7 @@ let currentLead = null;
 
 async function loadLeads() {
   try {
-    const response = await fetch(`${API_BASE}/leads`);
+    const response = await apiFetch(`${API_BASE}/leads`);
     const leads = await response.json();
     console.log('Loaded leads:', leads);
     displayLeads(leads);
@@ -34,7 +105,6 @@ function displayLeads(leads) {
     if (lead.statut === 'nouveau') row.classList.add('new-lead');
     const showRelance = isRelanceDue(lead);
 
-    // ✅ CORRIGÉ — 8 colonnes propres, sans corruption
     row.innerHTML = `
       <td>${new Date(lead.timestamp).toLocaleString('fr-FR')}</td>
       <td>${lead.nom || ''}</td>
@@ -68,7 +138,7 @@ function displayLeads(leads) {
 // PANEL DÉTAIL LEAD
 async function showLeadDetail(id) {
   try {
-    const response = await fetch(`${API_BASE}/leads/${id}`);
+    const response = await apiFetch(`${API_BASE}/leads/${id}`);
     const lead = await response.json();
     currentLead = lead;
 
@@ -173,7 +243,7 @@ function populatePanel(lead) {
 window.updatePanelStatus = async () => {
   const newStatut = document.getElementById('panelStatusSelect').value;
   try {
-    const response = await fetch(`${API_BASE}/leads/${currentLead._id}/statut`, {
+    const response = await apiFetch(`${API_BASE}/leads/${currentLead._id}/statut`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ statut: newStatut })
@@ -192,7 +262,7 @@ window.relancePanelLead = async () => {
   try {
     document.getElementById('panelRelanceBtn').disabled = true;
     document.getElementById('panelRelanceBtn').textContent = 'Relance envoyée ✓';
-    const response = await fetch(`${API_BASE}/leads/${currentLead._id}/relance`, { method: 'POST' });
+    const response = await apiFetch(`${API_BASE}/leads/${currentLead._id}/relance`, { method: 'POST' });
     if (response.ok) {
       showToast('Relance envoyée');
       showLeadDetail(currentLead._id);
@@ -212,7 +282,7 @@ function showToast(message) {
 
 window.updateStatut = async (id, statut) => {
   try {
-    const response = await fetch(`${API_BASE}/leads/${id}`, {
+    const response = await apiFetch(`${API_BASE}/leads/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ statut })
@@ -225,7 +295,7 @@ window.updateStatut = async (id, statut) => {
 
 async function loadDelais() {
   try {
-    const response = await fetch(`${API_BASE}/leads/config/delais`);
+    const response = await apiFetch(`${API_BASE}/leads/config/delais`);
     delaisConfig = await response.json();
     document.getElementById('delayNouveau').value = delaisConfig.nouveau;
     document.getElementById('delayContacte').value = delaisConfig.contacte || 48;
@@ -243,7 +313,7 @@ async function saveDelais() {
   delaisConfig['en_discussion'] = parseInt(document.getElementById('delayDiscussion').value);
   delaisConfig.perdu          = parseInt(document.getElementById('delayPerdu').value);
   try {
-    await fetch(`${API_BASE}/leads/config/delais`, {
+    await apiFetch(`${API_BASE}/leads/config/delais`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(delaisConfig)
@@ -257,7 +327,7 @@ async function saveDelais() {
 
 async function loadDelaisConfig() {
   try {
-    const response = await fetch(`${API_BASE}/leads/config/delais`);
+    const response = await apiFetch(`${API_BASE}/leads/config/delais`);
     delaisConfig = await response.json();
   } catch (e) {
     console.log('Delais load failed, using legacy');
@@ -266,15 +336,13 @@ async function loadDelaisConfig() {
 
 function isRelanceDue(lead) {
   // TOUJOURS AFFICHER BOUTON RELANCER (pour tests manuels)
-  console.log('Bouton relancer toujours visible');
   return true;
 }
 
 window.relanceLead = async (id) => {
   try {
-    const response = await fetch(`${API_BASE}/leads/${id}/relance`, { method: 'POST' });
+    const response = await apiFetch(`${API_BASE}/leads/${id}/relance`, { method: 'POST' });
     const data = await response.json();
-    console.log('Status:', response.status, 'Data:', data); // ← ajoute ça
     if (response.ok) {
       showToast('Relance envoyée ✓');
       loadLeads();
@@ -329,7 +397,7 @@ function updatePieChart(counts) {
 window.deleteLead = async (id) => {
   if (!confirm('Supprimer définitivement ce lead ?')) return;
   try {
-    const response = await fetch(`${API_BASE}/leads/${id}`, { method: 'DELETE' });
+    const response = await apiFetch(`${API_BASE}/leads/${id}`, { method: 'DELETE' });
     if (response.ok) {
       showToast('Lead supprimé');
       loadLeads();
@@ -350,10 +418,12 @@ window.deleteLead = async (id) => {
 socket.on('new_lead', () => {
   liveIndicator.textContent = '🟢 Nouveau lead !';
   setTimeout(() => liveIndicator.textContent = '🟢 Live', 3000);
-  loadLeads();
+  if (getToken()) loadLeads();
 });
 
-socket.on('lead_updated', loadLeads);
+socket.on('lead_updated', () => {
+  if (getToken()) loadLeads();
+});
 
 // Panel events
 closeLeadPanel.onclick = () => {
@@ -371,7 +441,8 @@ document.getElementById('saveDelais').onclick = saveDelais;
 document.getElementById('loadDelais').onclick = loadDelais;
 
 // Init
-loadDelais();
-loadLeads();
-setInterval(loadLeads, 30000);
-console.log('Dashboard ready - Panel détail OK');
+checkAuthAndInit();
+setInterval(() => {
+  if (getToken()) loadLeads();
+}, 30000);
+console.log('Dashboard secure auth loaded');

@@ -25,7 +25,19 @@ cd backend && npm start
 - Restart app (`npm start` ou PM2)
 - Test https://assurance.ubuntudigit.com/landing → /dashboard
 
-**Progression**: [✅] 1 [✅] 2 [✅] 3 [🔄] 4 [ ] 5
+**✅ TERMINÉ**: Local + Prod Fixes Ready
+
+1. **DB**: `backend/.env.example` créé → `cp backend/.env.example backend/.env` + MONGO_URI Atlas valide
+2. **Prod ENOENT**: README Hostinger steps (full structure backend/ + frontend/)
+3. **Test**: `cd backend && npm start` → "MongoDB Connected" + http://localhost:3000/dashboard OK
+4. **Deploy**: SSH Hostinger → copy FULL → npm install → pm2 restart
+
+**✅ Git clean**: Reset + .env.example sans clé (GitHub push OK maintenant)
+**✅ Test Local**:
+- cd backend; npm start
+- localhost:3000/landing → Submit → /dashboard live
+
+**🚀 Étape 5**: Deploy Hostinger → Copiez projet + npm install + restart
 
 **🚀 Test Local en cours**:
 ```

@@ -7,6 +7,26 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- ECRAN DE CONNEXION SÉCURISÉ -->
+  <div id="loginOverlay" class="login-overlay hidden">
+    <div class="login-box">
+      <h2>Connexion Admin</h2>
+      <p>Identifiez-vous pour accéder au tableau de bord.</p>
+      <form id="loginForm">
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" required />
+        </div>
+        <div class="input-group">
+          <label>Mot de passe</label>
+          <input type="password" id="loginPassword" required />
+        </div>
+        <button type="submit" id="loginSubmitBtn">Se connecter</button>
+        <p id="loginErrorMsg" class="error-msg"></p>
+      </form>
+    </div>
+  </div>
+
   <header>
     <nav>
       <div class="logo">Dashboard Leads</div>
@@ -67,21 +87,6 @@
               <th>Nom</th>
               <th>Contact</th>
               <th>Régime</th>
-</xai:function_call.
-
-
-
-
-**Colonne "Besoin" → "Régime" mise à jour !**
-
-Maintenant le dashboard affiche correctement :
-- **Colonne "Régime"** : `lead.regime` du formulaire (Salarié, TNS, Retraité...)
-- **Bouton suppression 🗑️** avec alerte confirm()
-
-Fichiers modifiés :
-- `script.js` : `${lead.regime || 'Non spécifié'}`
-- `index.html` : `<th></th>`
-
               <th>Message</th>
               <th>Statut</th>
               <th>Relances</th>
