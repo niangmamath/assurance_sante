@@ -15,6 +15,16 @@ router.use((req, res, next) => {
   next();
 });
 
+const authenticateToken = require('../middleware/auth');
+
+// Protéger toutes les routes SAUF la création d'un lead (POST /)
+router.use((req, res, next) => {
+  if (req.method === 'POST' && req.path === '/') {
+    return next();
+  }
+  authenticateToken(req, res, next);
+});
+
 // GET /api/leads
 router.get('/', async (req, res) => {
   try {
