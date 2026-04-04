@@ -40,11 +40,14 @@ io.on('connection', (socket) => {
 
 const leadsRouter = require('./routes/leads.js');
 const chatRouter = require('./routes/chat.js');
+const authRouter = require('./routes/auth.js');
+
 app.use('/api/leads', (req, res, next) => {
   req.io = io;
   next();
 }, leadsRouter);
 app.use('/api/chat', chatRouter);
+app.use('/api/auth', authRouter);
 
 // SPA FALLBACK ROUTES (local + prod Hostinger) - Après TOUTES les API routes
 app.get('/landing', (req, res) => res.sendFile(path.join(__dirname, '../frontend/landing/index.html')));

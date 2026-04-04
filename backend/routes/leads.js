@@ -15,6 +15,16 @@ router.use((req, res, next) => {
   next();
 });
 
+const authenticateToken = require('../middleware/auth');
+
+// Protéger toutes les routes SAUF la création d'un lead (POST /)
+router.use((req, res, next) => {
+  if (req.method === 'POST' && req.path === '/') {
+    return next();
+  }
+  authenticateToken(req, res, next);
+});
+
 // GET /api/leads
 router.get('/', async (req, res) => {
   try {
@@ -85,22 +95,27 @@ router.post('/', async (req, res) => {
     // EMIT + TRIGGER CONFIRMATION IMMÉDIAT n8n
     req.io.emit('new_lead', lead);
     
-    // Confirmation email immédiat
-    const n8nBase = process.env.N8N_WEBHOOK_BASE_URL || 'https://centrale.app.n8n.cloud/webhook/am-relance';
+    // Confirmation email immédiat (Hook relié directement au workflow de relance n8n)
+    const n8nBase = process.env.N8N_WEBHOOK_BASE_URL || 'https://centrale.app.n8n.cloud/webhook/relance-client';
     if (n8nBase) {
-      const confirmUrl = `${n8nBase}/confirmation-immediat`;
       try {
-        await fetch(confirmUrl, {
+        await fetch(n8nBase, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            lead: lead,
-            type: 'confirmation' 
+            body: {
+              nom: lead.nom,
+              email: lead.email,
+              statut: lead.statut,
+              regime: lead.regime || '',
+              message: "Le client vient de soumettre son formulaire de devis. C'est un nouveau prospect.",
+              nb_relances: 0
+            }
           })
         });
-        console.log('✅ Confirmation n8n triggered:', confirmUrl);
+        console.log('✅ Email de bienvenue IA (n8n) déclenché:', n8nBase);
       } catch (confirmErr) {
-        console.error('Confirmation n8n failed:', confirmErr.message);
+        console.error('Erreur déclenchement email bienvenue (n8n):', confirmErr.message);
       }
     }
     
@@ -248,7 +263,7 @@ router.post('/:id/relance', async (req, res) => {
     }
 
     // Trigger n8n
-    const n8nUrl = 'https://centrale.app.n8n.cloud/webhook/relance-client';
+    const n8nUrl = process.env.N8N_WEBHOOK_BASE_URL || 'https://centrale.app.n8n.cloud/webhook/relance-client';
     try {
       await fetch(n8nUrl, {
         method: 'POST',
