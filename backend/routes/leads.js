@@ -258,7 +258,7 @@ router.post('/:id/relance', async (req, res) => {
     }
 
     // Trigger n8n
-    const n8nUrl = 'https://centrale.app.n8n.cloud/webhook/relance-client';
+    const n8nUrl = process.env.N8N_WEBHOOK_BASE_URL || 'https://centrale.app.n8n.cloud/webhook/relance-client';
     try {
       await fetch(n8nUrl, {
         method: 'POST',
