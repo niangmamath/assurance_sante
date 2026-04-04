@@ -335,7 +335,8 @@ async function loadDelaisConfig() {
 }
 
 function isRelanceDue(lead) {
-  // TOUJOURS AFFICHER BOUTON RELANCER (pour tests manuels)
+  // Masque le bouton pour les nouveaux leads car ils ont reçu un email automatique
+  if (lead.statut === 'nouveau') return false;
   return true;
 }
 

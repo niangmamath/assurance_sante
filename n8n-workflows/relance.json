@@ -1,0 +1,207 @@
+{
+  "name": "Relance Client par Email",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "relance-client",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "dc401288-b96d-43be-ba2d-840bd2262722",
+      "name": "Reception_Dashboard",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        400,
+        640
+      ],
+      "webhookId": "ca3017ea-ae9d-4225-ba3b-28d236e0a523"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1",
+              "name": "email",
+              "value": "={{ $json.body.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "f2",
+              "name": "nom",
+              "value": "={{ $json.body.body.nom }}",
+              "type": "string"
+            },
+            {
+              "id": "f3",
+              "name": "statut",
+              "value": "={{ $json.body.body.statut }}",
+              "type": "string"
+            },
+            {
+              "id": "f4",
+              "name": "regime",
+              "value": "={{ $json.body.body.regime }}",
+              "type": "string"
+            },
+            {
+              "id": "f5",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "f6",
+              "name": "nb_relances",
+              "value": "={{ $json.body.nb_relances }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f3f638db-771a-45f9-a55f-a1b681f87816",
+      "name": "Set_Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=Tu es un conseiller en assurance santé professionnel et bienveillant.\n\nUn opérateur veut envoyer un email à ce client. Rédige un email court et personnalisé à partir des informations suivantes :\n\n- Nom du client : {{ $json.nom }}\n- Statut : {{ $json.statut }}\n- Régime : {{ $json.regime }}\n- Note de l'opérateur : {{ $json.message }}\n- Nombre de relances déjà envoyées : {{ $json.nb_relances }}\n\nRègles :\n1. Maximum 5 phrases\n2. Adapter le ton selon le statut :\n   - \"contacté\" → ton d'introduction, chaleureux, présenter l'offre\n   - \"en_discussion\" → ton de suivi, rappeler le régime du client, proposer un rendez-vous\n   - \"converti\" → ton de fidélisation, remercier, proposer un upsell ou un suivi\n3. Si nb_relances >= 3, adopter un ton de dernière chance, bienveillant et sans pression\n4. Intégrer naturellement la note de l'opérateur dans le message\n5. Terminer par un appel à l'action clair (répondre à cet email ou prendre RDV)\n6. Signer au nom de \"L'équipe Assurance Santé\"\n7. Répondre UNIQUEMENT avec le corps de l'email, sans objet ni balise"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "b8b3ce8d-534f-4d5d-82c4-ac8232ab6ca9",
+      "name": "Generation_Email_IA",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        816,
+        640
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "lXoSrbsAvEHuvbVg",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Set_Data').first().json.email }}",
+        "subject": "={{ $('Set_Data').first().json.nom }} — suivi de votre demande",
+        "emailType": "text",
+        "message": "={{ $json.output[0].content[0].text }}",
+        "options": {}
+      },
+      "id": "cb43d5c0-3ccc-4c2e-8c38-9c961f843c82",
+      "name": "Envoi_Email_Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1152,
+        640
+      ],
+      "webhookId": "0856efb7-954f-4714-b2e0-dbe59de4072f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "1nRugyCRhxSQjnsc",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message_envoye_a\": $('Set_Data').first().json.email, \"statut_client\": $('Set_Data').first().json.statut, \"timestamp\": $now.toISO() } }}",
+        "options": {}
+      },
+      "id": "bc6f8545-3784-459c-8c85-d360527e7991",
+      "name": "Reponse_Dashboard",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1296,
+        640
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Reception_Dashboard": {
+      "main": [
+        [
+          {
+            "node": "Set_Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_Data": {
+      "main": [
+        [
+          {
+            "node": "Generation_Email_IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generation_Email_IA": {
+      "main": [
+        [
+          {
+            "node": "Envoi_Email_Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envoi_Email_Gmail": {
+      "main": [
+        [
+          {
+            "node": "Reponse_Dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "88757058-af87-4d20-b197-68abff044eca",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9bd71e9115b83338e3f08383556db20bdb037589c276654eb8133d2021ca6153"
+  },
+  "id": "W7RTd6kJIoGMO7FW",
+  "tags": []
+}
